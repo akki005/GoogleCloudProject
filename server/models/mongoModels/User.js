@@ -14,6 +14,10 @@ let UserSchema = new Schema({
     password: {
         type: String,
         required: 'password is required'
+    },
+    isVerified: {
+        type: Boolean,
+        default: false
     }
 });
 UserSchema.plugin(unique_validator, {

@@ -12,19 +12,20 @@ let transporter = nodeMailer.createTransport({
 });
 
 
-module.exports.sendMail = function (email, cb) {
+module.exports.sendMail = function (email, token, cb) {
     let message = {
         from: MailConfigs.EMAIL_VARIFICATION_FROM,
         to: email,
         subject: MailConfigs.EMAIL_VARIFICATION_SUBJECT,
-        html: MailConfigs.EMAIL_VARIFICATION_HTML
+        html: `<p>Please verify your account by clicking <a href="${MailConfigs.EMAIL_VARIFICATION_HOST_URL}/#/Verify?key=${token}">here</a></p>
+                <p>This link will expire after 30 seconds</p>`
     }
     transporter.sendMail(message, function (err) {
         if (err) {
-            debug_err("Mail not send :: %O",err);
+            debug_err("Mail not send :: %O", err);
             cb(err, null);
         } else {
-            debug_success("Mail sent to user :: %s",email);            
+            debug_success("Mail sent to user :: %s", email);
             cb(null, true);
         }
     });

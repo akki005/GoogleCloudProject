@@ -1,4 +1,4 @@
-<div class="app flex-row align-items-center">
+<div class="app flex-row align-items-center" ng-controller="RegisterCtrl">
   <div class="container">
     <div class="row justify-content-center">
       <div class="col-md-6">
@@ -6,27 +6,30 @@
           <div class="card-body p-4">
             <h1>Register</h1>
             <p class="text-muted">Create your account</p>
-            <div class="input-group mb-3">
-              <span class="input-group-addon"><i class="icon-user"></i></span>
-              <input type="text" class="form-control" placeholder="Username">
-            </div>
+            <form name="register_form" ng-submit="Register()">
+              <div class="input-group mb-3">
+                <span ng-class="{'invalid-field':register_form.email.$invalid}" class="input-group-addon">@</span>
+                <input type="text" class="form-control" name="email" ng-model="Email" placeholder="Email" ng-pattern="Email_Regex" required>
+              </div>
 
-            <div class="input-group mb-3">
-              <span class="input-group-addon">@</span>
-              <input type="text" class="form-control" placeholder="Email">
-            </div>
+              <div class="input-group mb-3">
+                <span ng-class="{'invalid-field':register_form.password.$invalid}" class="input-group-addon">
+                  <i tooltips tooltip-template="{{password_tip}}" class="icon-lock"></i>
+                </span>
+                <input type="password" class="form-control" name="password" ng-model="Password" placeholder="Password" ng-pattern="Password_Regex"
+                  required>
+              </div>
 
-            <div class="input-group mb-3">
-              <span class="input-group-addon"><i class="icon-lock"></i></span>
-              <input type="password" class="form-control" placeholder="Password">
-            </div>
+              <div class="input-group mb-4">
+                <span ng-class="{'invalid-field':register_form.password.$invalid || Password !== Repeat_Password}" class="input-group-addon">
+                  <i class="icon-lock"></i>
+                </span>
+                <input type="password" class="form-control" ng-model="Repeat_Password" placeholder="Repeat password" required>
+              </div>
 
-            <div class="input-group mb-4">
-              <span class="input-group-addon"><i class="icon-lock"></i></span>
-              <input type="password" class="form-control" placeholder="Repeat password">
-            </div>
-
-            <button type="button" class="btn btn-block btn-success">Create Account</button>
+              <button type="submit" ng-show="!Registered" ng-disabled="register_form.$invalid || Password !== Repeat_Password" class="btn btn-block btn-success">Create Account</button>
+              <p ng-show="Registered">{{registered_msg}}</p>
+            </form>
           </div>
           <div class="card-footer p-4">
             <div class="row">

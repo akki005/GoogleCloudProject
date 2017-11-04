@@ -27,6 +27,8 @@
     "oclazyload": "^1.1.0",
     "simple-line-icons": "^2.4.1",
     "chart.js": "^2.7.0",
-    "angular-chart.js": "^1.1.1"
+    "angular-chart.js": "^1.1.1",
+    "AngularJS-Toaster": "angularjs-toaster#^2.2.0",
+    "angular-tooltips": "^1.2.2"
   }
 }

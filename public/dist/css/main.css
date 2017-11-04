@@ -8,3 +8,10 @@ html {
 .container-fluid{
     height: 100%;
 }
+.invalid-field{
+    color: red !important;
+}
+.password-tip-list{
+    text-align: left;
+    padding: 0px;
+}

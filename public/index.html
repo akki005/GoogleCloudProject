@@ -7,6 +7,7 @@
  -->
 <!DOCTYPE html>
 <html lang="en" ng-app="app">
+
 <head>
 
   <meta charset="utf-8">
@@ -21,7 +22,8 @@
 
   <!-- Main styles for this application -->
   <link href="/public/dist/css/style.css" rel="stylesheet">
-
+  <link  rel="stylesheet" href="/public/libs/AngularJS-Toaster/toaster.min.css">
+  <link rel="stylesheet" href="/public/libs/angular-tooltips/dist/angular-tooltips.min.css">
 </head>
 
 <!-- BODY options, add following classes to body to change options
@@ -50,7 +52,7 @@
 -->
 
 <body class="header-fixed sidebar-fixed aside-menu-fixed aside-menu-hidden">
-
+  <toaster-container toaster-options="{'time-out': 2000,'close-button': true,'position-class': 'toast-top-center'}"></toaster-container>
   <!-- User Interface -->
   <ui-view class="app"></ui-view>
 
@@ -69,6 +71,8 @@
   <script src="/public/libs/oclazyload/dist/ocLazyLoad.min.js"></script>
   <script src="/public/libs/angular-breadcrumb/dist/angular-breadcrumb.min.js"></script>
   <script src="/public/libs/angular-loading-bar/build/loading-bar.min.js"></script>
+  <script src="/public/libs/AngularJS-Toaster/toaster.min.js"></script>
+  <script src="/public/libs/angular-tooltips/dist/angular-tooltips.min.js"></script>
 
   <!-- AngularJS CoreUI App scripts -->
 
@@ -82,4 +86,5 @@
   <script src="/public/app/directives.js"></script>
 
 </body>
+
 </html>

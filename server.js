@@ -9,7 +9,7 @@ const debug_success = require('debug')('Success');
 const morgan = require('morgan');
 const expressValidator = require('express-validator');
 const MONGO_CONNECT = require('./server/helpers/mongoHelpers/mongoConnectHelper');
-
+const cors = require('cors');
 
 class Server {
     constructor() {
@@ -26,13 +26,19 @@ class Server {
     }
 
     setMiddleware() {
+        app.use(function(req,res,next){
+            res.setHeader('Access-Control-Allow-Origin',"appspot.com");
+            res.setHeader("Access-Control-Allow-Mehtods","GET,PUT,POST,DELETE");
+            res.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+            res.removeHeader('x-powered-by');
+            next();
+        });
         app.use(bodyParser.json());
         app.use(bodyParser.urlencoded({
             extended: false
         }));
         app.use(expressValidator());
         app.use(cookieParser());
-        app.use(morgan('tiny'));
     }
 
     setControllers() {
@@ -45,6 +51,7 @@ class Server {
     setStaticPath() {
         app.use(express.static('.'));
         app.use(express.static('./public/'));
+        app.use(morgan('short'));
     }
 
     setErrorHandler() {
