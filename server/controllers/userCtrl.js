@@ -24,7 +24,7 @@ module.exports = function () {
                     }
                 });
             } else {
-                UserService.saveUser(req.body.email, req.body.password, function (err, result) {
+                UserService.save(req.body.email, req.body.password, function (err, result) {
                     if (err) {
                         next({
                             status: err.status,

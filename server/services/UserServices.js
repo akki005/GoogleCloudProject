@@ -5,21 +5,19 @@ const debug_success = require('debug')('Success');
 const {
     ValidationError
 } = require('../helpers/mongoHelpers/validationErrorHelper');
-const BcryptHelper=require('../helpers/bcryptHelpers/bcryptHelper');
+const Mailer = require('../helpers/MailHelpers/Transporter');
+const BcryptHelper = require('../helpers/bcryptHelpers/bcryptHelper');
 
-class UserSerivce {
 
-    constructor() {
 
-    }
-    
-    validateUserRegistrationInput(email, password, cb) {
-        let newUser = new User({
-            email: email,
-            password: password
-        });
-        newUser.validate(function (err) {
-            if (err) {
+module.exports.save = function (email, password, cb) {
+    let newUser = new User({
+        email: email,
+        password: password
+    });
+    newUser.save(function (err, user) {
+        if (err) {
+            if (err.name === "ValidationError") {
                 let newvalidationError = new ValidationError(err);
                 let err_msg = newvalidationError.getMessage();
                 cb({
@@ -27,35 +25,42 @@ class UserSerivce {
                     msg: err_msg
                 }, null);
             } else {
-                cb(null, true);
+                cb({
+                    status: 500,
+                    msg: err
+                }, null);
             }
-        });
-    }
-    saveUser(email, password, cb) {
-        let newUser = new User({
-            email: email,
-            password: password
-        });
-        newUser.save(function (err, user) {
-            if (err) {
-                if (err.name === "ValidationError") {
-                    let newvalidationError = new ValidationError(err);
-                    let err_msg = newvalidationError.getMessage();
-                    cb({
-                        status: 400,
-                        msg: err_msg
-                    }, null);
-                } else {
+        } else {
+            Mailer.sendMail(user.email, function (err, done) {
+                if (err) {
                     cb({
                         status: 500,
                         msg: err
                     }, null);
+                } else {
+                    cb(null, user);
                 }
-            } else {
-                cb(null, user);
-            }
-        });
-    }
+            });
+        }
+    });
 }
 
-module.exports = new UserSerivce();
+
+module.exports.validateUserRegistrationInput = function (cb) {
+    let newUser = new User({
+        email: this.email,
+        password: this.password
+    });
+    newUser.validate(function (err) {
+        if (err) {
+            let newvalidationError = new ValidationError(err);
+            let err_msg = newvalidationError.getMessage();
+            cb({
+                status: 400,
+                msg: err_msg
+            }, null);
+        } else {
+            cb(null, true);
+        }
+    });
+}

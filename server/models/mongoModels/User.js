@@ -14,7 +14,6 @@ let UserSchema = new Schema({
     password: {
         type: String,
         required: 'password is required'
-        //match:[USER_CONST.PASSWORD_VALIDATION_REGEX,USER_CONST.PASSWORD_VALIDATION_MESSAGE]
     }
 });
 UserSchema.plugin(unique_validator, {
