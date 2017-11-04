@@ -8,7 +8,7 @@ let {
 } = require('../../config/dbconfig/mongo').MONGO_CFG;
 const debug_err = require('debug')('Errors');
 const debug_success = require('debug')('Success');
-
+mongoose.Promise = global.Promise;
 
 class Mongo {
     constructor() {

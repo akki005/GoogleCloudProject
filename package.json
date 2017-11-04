@@ -11,11 +11,13 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "^1.0.3",
     "body-parser": "^1.18.2",
     "cookie-parser": "^1.4.3",
     "express": "^4.16.2",
     "express-validator": "^4.2.1",
     "mongoose": "^4.12.4",
+    "mongoose-unique-validator": "^1.0.6",
     "morgan": "^1.9.0",
     "passport": "^0.4.0"
   },

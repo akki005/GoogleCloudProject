@@ -13,7 +13,7 @@ const MONGO_CONNECT = require('./server/helpers/mongoHelpers/mongoConnectHelper'
 
 class Server {
     constructor() {
-        //this.initDB();
+        this.initDB();
         this.setMiddleware();
         this.setStaticPath();
         this.setControllers();
@@ -30,9 +30,9 @@ class Server {
         app.use(bodyParser.urlencoded({
             extended: false
         }));
-        app.use(expressValidator());        
+        app.use(expressValidator());
         app.use(cookieParser());
-        app.use(morgan('combined'));
+        app.use(morgan('tiny'));
     }
 
     setControllers() {
@@ -48,14 +48,10 @@ class Server {
     }
 
     setErrorHandler() {
-    /*     app.use(function (req, res, next) {
-            var err = new Error('Not Found');
-            err.status = 404;
-            next(err);
-        }); */
         app.use(function (err, req, res, next) {
-            //debug_err(err);
-            res.status(err.status || 500).send(err.message);
+            res.status(err.status || 500).send({
+                msg: err.message
+            });
         });
     }
 
