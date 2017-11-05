@@ -22,6 +22,10 @@ angular
     '720kb.tooltips',
     'ngSanitize'
   ])
+  .constant('FORM_VALIDATION_REGEX', {
+    EMAIL: /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
+    PASSWORD: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[_@]).{8,}$/
+  })
   .config(['cfpLoadingBarProvider', 'tooltipsConfProvider', function (cfpLoadingBarProvider, tooltipsConfProvider) {
     cfpLoadingBarProvider.includeSpinner = false;
     cfpLoadingBarProvider.latencyThreshold = 1;
@@ -29,7 +33,7 @@ angular
       'speed': 'slow'
     });
   }])
-  .run(['$rootScope', '$state', '$stateParams', function ($rootScope, $state, $stateParams) {
+  .run(['$transitions', '$rootScope', '$state', '$stateParams', '$location', 'UserServices', function ($transitions, $rootScope, $state, $stateParams, $location, UserServices) {
     $rootScope.$on('$stateChangeSuccess', function () {
       document.body.scrollTop = document.documentElement.scrollTop = 0;
     });

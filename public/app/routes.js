@@ -7,7 +7,7 @@ angular
 
     $ocLazyLoadProvider.config({
       // Set to true if you want to see what and when is dynamically loaded
-      debug: true
+      debug: false
     });
 
     $breadcrumbProvider.setOptions({
@@ -26,6 +26,9 @@ angular
           skip: true
         },
         resolve: {
+          /* authenticate: function () {
+            throw "change error";
+          } */
           loadCSS: ['$ocLazyLoad', function ($ocLazyLoad) {
             // you can lazy load CSS files
             return $ocLazyLoad.load([{
@@ -48,7 +51,7 @@ angular
                 '/public/libs/angular-chart.js/dist/angular-chart.min.js'
               ]
             }]);
-          }],
+          }]
         }
       })
       .state('app.main', {
@@ -63,6 +66,10 @@ angular
           subtitle: 'Welcome to ROOT powerfull Bootstrap & AngularJS UI Kit'
         },
         resolve: {
+          /* authenticate: ['$q', 'UserServices', function ($q, UserServices) {
+            //var deferred = $q.defer();
+            return UserServices.Authenticate();
+          }], */
           loadPlugin: ['$ocLazyLoad', function ($ocLazyLoad) {
             // you can lazy load files for an existing module
             return $ocLazyLoad.load([{
@@ -80,7 +87,7 @@ angular
               files: ['/public/app/controllers/main.js']
             });
           }]
-        }
+        },
       })
       .state('appSimple', {
         abstract: true,
@@ -104,7 +111,14 @@ angular
       // Additional Pages
       .state('appSimple.login', {
         url: '/login',
-        templateUrl: '/public/views/pages/login.html'
+        templateUrl: '/public/views/pages/login.html',
+        resolve: {
+          loadMyCtrl: ['$ocLazyLoad', function ($ocLazyLoad) {
+            return $ocLazyLoad.load({
+              files: ['/public/app/controllers/LoginCtrl.js']
+            });
+          }]
+        }
       })
       .state('appSimple.register', {
         url: '/register',
@@ -114,7 +128,6 @@ angular
             // you can lazy load controllers
             return $ocLazyLoad.load({
               files: ['/public/app/controllers/RegisterCtrl.js',
-                '/public/app/services/UserServices.js',
                 '/public/dist/css/main.css'
               ]
             });
@@ -143,4 +156,42 @@ angular
           }]
         }
       });
+  }])
+  .run(['$transitions', '$rootScope', '$state', '$stateParams', '$location', 'UserServices', '$q', function ($transitions, $rootScope, $state, $stateParams, $location, UserServices, $q) {
+    /*  $rootScope.$on('$stateChangeError', function (event, toState, toParams, fromState, fromParams, error) {
+       console.log("Error", error);
+     }); */
+    /*  $transitions.onBefore({
+       to: 'app.*',
+       from: '*'
+     }, function (transition) {
+       const deferred = $q.defer();
+       UserServices.Authenticate().then(function () {
+           deferred.resolve();
+         })
+         .catch(function () {
+           deferred.resolve(transition.router.stateService.target('appSimple.login'));
+         });
+       return deferred.promise;
+     }); */
+    $transitions.onStart({
+      to: 'app.**'
+    }, function (transition) {
+      //if (transition.to().name === 'app.main') {
+      const deferred = $q.defer();
+      UserServices.Authenticate().then(function () {
+          deferred.resolve();
+        })
+        .catch(function () {
+          deferred.resolve(transition.router.stateService.target('appSimple.login', undefined, {
+            location: true
+          }));
+          // deferred.resolve($state.target('appSimple.login', undefined, { location: true }));
+        });
+      return deferred.promise;
+      //}
+    });
+    /* $transitions.onError({}, function ($transition) {
+      //return $transition.router.stateService.target('appSimple.login');
+    }); */
   }]);

@@ -18,9 +18,13 @@ class Bcrypt {
     ComparePassword(plainTextPassword, hashedPassword, cb) {
         bcrypt.compare(plainTextPassword, hashedPassword, function (err, match) {
             if (err) {
-                cb(err, null);
-            } else {
-                cb(null, match);
+               return cb(err, null);
+            } 
+            if(!match){
+                return cb(null,false);
+            }
+            if(match){
+                return cb(null,true);
             }
         });
     }

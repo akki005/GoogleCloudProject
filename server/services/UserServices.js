@@ -10,6 +10,7 @@ const {
 const Mailer = require('../helpers/MailHelpers/Transporter');
 const BcryptHelper = require('../helpers/bcryptHelpers/bcryptHelper');
 const crypto = require('crypto');
+const Messages = require('../config/constants/Messages');
 
 module.exports.VerifyEmail = function (token, cb) {
     Token.findOne({
@@ -22,7 +23,7 @@ module.exports.VerifyEmail = function (token, cb) {
 
         if (!token) return cb({
             status: 404,
-            msg: "token not found"
+            msg: Messages.INVALID_VERIFICATION_TOKEN
         }, null);
 
         User.findOne({
@@ -35,22 +36,27 @@ module.exports.VerifyEmail = function (token, cb) {
 
             if (!user) return cb({
                 status: 404,
-                msg: "user not found"
+                msg: Messages.INVALID_VERIFICATION_TOKEN
             }, null);
-            if (user.isVerified) return cb({
-                status: 404,
-                msg: "user already verified"
-            }, null);
+            if (user.isVerified) return cb(null, {
+                status: 200,
+                msg: Messages.EMAIL_ALREADY_VERIFIED
+            });
 
-            user.isVerified = true;
-            user.save(function (err) {
+            User.update({
+                _id: user._id
+            }, {
+                $set: {
+                    isVerified: true
+                }
+            }, function (err) {
                 if (err) return cb({
                     status: 500,
                     msg: err
                 }, null);
                 cb(null, {
                     status: 200,
-                    msg: "Account has been verified"
+                    msg: Messages.EMAIL_VERIFIED
                 });
             });
         });
@@ -59,7 +65,7 @@ module.exports.VerifyEmail = function (token, cb) {
 
 
 
-module.exports.save = function (email, password, cb) {
+module.exports.save = function (email, password,host_url, cb) {
     let newUser = new User({
         email: email,
         password: password
@@ -92,7 +98,7 @@ module.exports.save = function (email, password, cb) {
                         msg: err
                     }, null);
                 } else {
-                    Mailer.sendMail(user.email, token.token, function (err, done) {
+                    Mailer.sendMail(user.email, token.token,host_url, function (err, done) {
                         if (err) {
                             cb({
                                 status: 500,

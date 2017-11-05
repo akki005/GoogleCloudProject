@@ -9103,8 +9103,12 @@ hr.transparent {
     display: none !important; } }
 
 @media (max-width: 991px) {
-  .d-md-down-none {
-    display: none !important; } }
+  /* .d-md-down-none {
+    display: none !important; } */
+    .nav-btn-large {
+      display: none !important;
+    }
+  }
 
 @media (max-width: 1199px) {
   .d-lg-down-none {
