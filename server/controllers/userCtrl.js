@@ -31,6 +31,34 @@ module.exports = function () {
         });
 
 
+    UserRouter.route('/google/LogIn')
+        .get(passport.authenticate('google', {
+            scope: ['profile', 'email']
+        }));
+
+    UserRouter.route('/google/authenticated')
+        .get(function (req, res, next) {
+            passport.authenticate('google', function (err, user, info) {
+                if (err) return next({
+                    message: err
+                });
+
+                if (!user) {
+                    return res.status(401).send({
+                        msg: info.message
+                    });
+                }
+
+                req.logIn(user, function (err) {
+                    if (err) return next({
+                        message: err
+                    });
+
+                    res.redirect(`${req.protocol}://${req.hostname}/#/dashboard`);
+                });
+
+            })(req, res, next);
+        });
 
     UserRouter.route('/Login')
         .post([check('email', 'PLease provide valid email').isEmail().trim().normalizeEmail(),
@@ -75,7 +103,10 @@ module.exports = function () {
 
 
     UserRouter.route('/Register')
-        .post([check('password', USER_CONST.PASSWORD_VALIDATION_MESSAGE).matches(USER_CONST.PASSWORD_VALIDATION_REGEX)], function (req, res, next) {
+        .post([check('password', USER_CONST.PASSWORD_VALIDATION_MESSAGE).matches(USER_CONST.PASSWORD_VALIDATION_REGEX),
+            sanitize('password').escape(),
+            sanitize('email').escape()
+        ], function (req, res, next) {
             const errors = validationResult(req);
             if (!errors.isEmpty()) {
                 next({
@@ -85,8 +116,8 @@ module.exports = function () {
                     }
                 });
             } else {
-                let host_url=`${req.protocol}://${req.hostname}`;                
-                UserService.save(req.body.email, req.body.password,host_url,function (err, result) {
+                let host_url = `${req.protocol}://${req.hostname}`;
+                UserService.save(req.body.email, req.body.password, host_url, function (err, result) {
                     if (err) {
                         next({
                             status: err.status,
@@ -121,7 +152,9 @@ module.exports = function () {
                             message: err.msg
                         });
                     } else {
-                        res.status(result.status).send({msg:result.msg});
+                        res.status(result.status).send({
+                            msg: result.msg
+                        });
                     }
                 });
             }
@@ -130,6 +163,7 @@ module.exports = function () {
 
     UserRouter.route('/LogOut')
         .post(function (req, res, next) {
+            debug_success(req.user);
             req.logout();
             res.status(200).send({
                 msg: "Logged Out"

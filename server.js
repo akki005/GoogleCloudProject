@@ -3,6 +3,7 @@ const app = express();
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const serverCfg = require('./server/config/serverconfig/servercfg');
+let passportCfg = require('./server/config/passportconfig/passportCfg');
 //const debug_req = require('debug')('Requests');
 const debug_err = require('debug')('Errors');
 const debug_success = require('debug')('Success');
@@ -30,6 +31,16 @@ class Server {
     }
 
     setMiddleware() {
+        // app.use(cors())
+        app.use(function (req, res, next) {
+            //debug_success("session :: %O",req.session);
+            //debug_success("session user :: %O",req.user);
+            res.header('Access-Control-Allow-Origin', "*");
+            res.header("Access-Control-Allow-Mehtods", "GET,PUT,POST,DELETE");
+            res.header("Access-Control-Allow-Headers", "Content-Type, Accept");
+            res.removeHeader('x-powered-by');
+            next();
+        });
         app.use(cookieParser());
         app.use(bodyParser.json());
         app.use(bodyParser.urlencoded({
@@ -54,15 +65,6 @@ class Server {
         app.use(passport.session());
         require('./server/helpers/passportHelpers/passportConfig')(passport);
         require('./server/helpers/passportHelpers/localStrategy')(passport);
-        app.use(function (req, res, next) {
-            //debug_success("session :: %O",req.session);
-            //debug_success("session user :: %O",req.user);
-            res.setHeader('Access-Control-Allow-Origin', "appspot.com");
-            res.setHeader("Access-Control-Allow-Mehtods", "GET,PUT,POST,DELETE");
-            res.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-            res.removeHeader('x-powered-by');
-            next();
-        });
         app.use(expressValidator());
     }
 
@@ -81,6 +83,7 @@ class Server {
 
     setErrorHandler() {
         app.use(function (err, req, res, next) {
+            debug_err(err);
             res.status(err.status || 500).send({
                 msg: err.message
             });

@@ -3,9 +3,9 @@
         .module('app')
         .controller('RegisterCtrl', RegisterCtrl);
 
-    RegisterCtrl.$inject = ['$scope', '$stateParams', 'UserServices', 'toaster', '$sce']
+    RegisterCtrl.$inject = ['$scope', '$stateParams', 'UserServices', 'toaster', '$sce','$window']
 
-    function RegisterCtrl($scope, $stateParams, UserServices, toaster, $sce) {
+    function RegisterCtrl($scope, $stateParams, UserServices, toaster, $sce,$window) {
         $scope.Email = undefined;
         $scope.Password = undefined;
         $scope.Repeat_Password = undefined;
@@ -34,5 +34,6 @@
                     }
                 });
         };
+        
     }
 }());

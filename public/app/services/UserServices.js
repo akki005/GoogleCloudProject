@@ -2,15 +2,29 @@ angular
     .module('app')
     .factory('UserServices', UserServices);
 
-UserServices.$inject = ['$http', '$q'];
+UserServices.$inject = ['$http', '$q','$window'];
 
-function UserServices($http, $q) {
+function UserServices($http, $q,$window) {
     return {
         Authenticate: Authenticate,
         VerifyEmail: VerifyEmail,
         Register: Register,
         LogIn: LogIn,
-        LogOut: LogOut
+        LogOut: LogOut,
+        gSignIn: gSignIn
+    }
+
+    function gSignIn() {
+        return $http({
+                method: 'GET',
+                url: '/user/google/LogIn'
+            })
+            .then(function (success) {
+                return success.data.msg;
+            })
+            .catch(function (err) {
+                return $q.reject(err);
+            });
     }
 
     function LogOut() {

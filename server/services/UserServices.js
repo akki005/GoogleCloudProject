@@ -65,7 +65,7 @@ module.exports.VerifyEmail = function (token, cb) {
 
 
 
-module.exports.save = function (email, password,host_url, cb) {
+module.exports.save = function (email, password, host_url, cb) {
     let newUser = new User({
         email: email,
         password: password
@@ -98,7 +98,7 @@ module.exports.save = function (email, password,host_url, cb) {
                         msg: err
                     }, null);
                 } else {
-                    Mailer.sendMail(user.email, token.token,host_url, function (err, done) {
+                    Mailer.sendMail(user.email, token.token, host_url, function (err, done) {
                         if (err) {
                             cb({
                                 status: 500,

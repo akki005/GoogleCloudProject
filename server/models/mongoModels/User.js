@@ -9,6 +9,7 @@ let UserSchema = new Schema({
         type: String,
         required: 'email is required',
         unique: true,
+        lowercase: true,
         match: [USER_CONST.EMAIL_VALIDATION_REGEX, 'Please Enter Valid {PATH}']
     },
     password: {
