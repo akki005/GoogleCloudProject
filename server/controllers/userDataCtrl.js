@@ -26,7 +26,6 @@ module.exports = function () {
     };
 
     function getProfile(req, res, next) {
-        console.log(req.user);
         if (req.user.type === 'google') {
             GoogleUser.findById(req.user._id, {
                 'profile': 1,
