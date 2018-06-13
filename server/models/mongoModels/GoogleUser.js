@@ -11,14 +11,19 @@ let GoogleUserSchema = new Schema({
         required: 'email is required',
         unique: true
     },
-    name: {
-        type: String
+    profile: {
+        name: {
+            type: String,
+            default: "User"
+        },
+        picture: {
+            type: String,
+        },
+        gender: String,
+        age: Number
     },
-    image: {
+    token: {
         type: String
-    },
-    token:{
-        type:String
     }
 });
 

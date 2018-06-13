@@ -1,7 +1,5 @@
 let express = require('express');
-
-let DataRouter = express.Router();
-
+let UserDataRouter = express.Router();
 let expressValidator = require('express-validator');
 const {
     check,
@@ -13,23 +11,27 @@ const {
 } = require('express-validator/filter');
 const debug_err = require('debug')('Errors');
 const debug_success = require('debug')('Success');
+
+
 const UserService = require('../services/UserServices');
 const USER_CONST = require('../config/constants/UserConstants');
+const userDataCtrl = require('../controllers/userDataCtrl')();
 const passport = require('passport');
 
 
-module.exports=function(){
-    
-    DataRouter.use(function(req,res,next){
-        
+module.exports = function () {
+
+    UserDataRouter.use(function (req, res, next) {
+        if (req.isAuthenticated()) {
+            next();
+        } else {
+            next({
+                status: 401,
+                message: 'Unauthorized'
+            });
+        }
     });
+    UserDataRouter.get('/userdata/profile', userDataCtrl.getProfile);
 
-
-    DataRouter.route('/')
-    .get()
-    
-    
-    
-    
-    return DataRouter;
-}
+    return UserDataRouter;
+};

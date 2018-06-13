@@ -2,16 +2,31 @@ angular
     .module('app')
     .factory('UserServices', UserServices);
 
-UserServices.$inject = ['$http', '$q','$window'];
+UserServices.$inject = ['$http', '$q', '$window'];
 
-function UserServices($http, $q,$window) {
+function UserServices($http, $q, $window) {
     return {
+        getProfile: getProfile,
         Authenticate: Authenticate,
         VerifyEmail: VerifyEmail,
         Register: Register,
         LogIn: LogIn,
         LogOut: LogOut,
         gSignIn: gSignIn
+    }
+
+
+    function getProfile() {
+        return $http({
+                method: 'GET',
+                url: '/userdata/profile'
+            })
+            .then(function (success) {
+                return success.data;
+            })
+            .catch(function (err) {
+                return $q.reject(err);
+            });
     }
 
     function gSignIn() {

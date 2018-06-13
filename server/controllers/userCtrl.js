@@ -21,6 +21,7 @@ module.exports = function () {
     UserRouter.route('/Authenticate')
         .get(function (req, res, next) {
             if (req.user) {
+                console.log(req.user);
                 res.status(200).send();
             } else {
                 res.status(401).send({

@@ -19,6 +19,18 @@ let UserSchema = new Schema({
     isVerified: {
         type: Boolean,
         default: false
+    },
+    profile: {
+        name: {
+            type: String,
+            default: "User"
+        },
+        picture: {
+            type: String,
+            default: "/public/dist/images/user.png"
+        },
+        gender: String,
+        age: Number
     }
 });
 UserSchema.plugin(unique_validator, {

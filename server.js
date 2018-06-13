@@ -71,6 +71,7 @@ class Server {
     setControllers() {
         let UserCtrl = require('./server/controllers/userCtrl')();
         app.use('/user', UserCtrl);
+        app.use(require('./server/route/userRoutes')());
     }
 
 

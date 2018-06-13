@@ -26,9 +26,24 @@ function convertHex(hex, opacity) {
 }
 
 
-profileCtrl.$inject = ['$scope', 'UserServices', '$state'];
+profileCtrl.$inject = ['$scope', 'UserServices', '$state', 'toaster'];
 
-function profileCtrl($scope, UserServices,$state) {
+function profileCtrl($scope, UserServices, $state, toaster) {
+
+  UserServices.getProfile()
+    .then(function (profile) {
+      $scope.user =profile;
+      console.log($scope.user);
+    })
+    .catch(function (error) {
+      console.log(error);
+      toaster.pop({
+        type: 'error',
+        title: '',
+        body: error
+      });
+    });
+
   $scope.LogOut = function () {
     UserServices.LogOut().then(function (message) {
         $state.go('appSimple.login');

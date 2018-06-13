@@ -14,14 +14,14 @@ module.exports = function (passport) {
         if (user.type === 'local') {
             User.findById(user._id, {
                 'password': 0
-            }, function (err, user) {
+            }, function (err, user_db) {
                 if (err) return done(err, null);
                 done(null, user);
             });
         } else if (user.type === 'google') {
             GoogleUser.findById(user._id, {
                 'token': 0
-            }, function (err, user) {
+            }, function (err, user_db) {
                 if (err) return done(err, null);
                 done(null, user);
             });

@@ -19,6 +19,9 @@ module.exports = function (passport) {
     }, function (email, password, done) {
         User.findOne({
             'email': email
+        }, {
+            'password': 1,
+            'isVerified': 1
         }, function (err, user) {
             if (err) return done(err);
 
@@ -58,15 +61,15 @@ module.exports = function (passport) {
         clientSecret: PassportConfig.google.clientSecret,
         callbackURL: PassportConfig.google.callbackURL
     }, (accessToken, refreshToken, profile, done) => {
-        debug_success("user profile :: %O", profile);
-        debug_success("access token :: %O", accessToken);
+        // debug_success("user profile :: %O", profile);
+        // debug_success("access token :: %O", accessToken);
 
         process.nextTick(function () {
 
             GoogleUser.findOne({
                 '_id': profile.id
             }, {
-                'token': 0
+                'token': 0,
             }, function (err, user) {
                 if (err) {
                     return done(err, null, {
@@ -83,8 +86,8 @@ module.exports = function (passport) {
                     let newGoogleUser = new GoogleUser();
                     newGoogleUser._id = profile.id;
                     newGoogleUser.email = profile.emails[0].value;
-                    newGoogleUser.name = profile.displayName;
-                    newGoogleUser.image = profile.photos[0].value;
+                    newGoogleUser.profile.name = profile.displayName;
+                    newGoogleUser.profile.picture = profile.photos[0].value;
                     newGoogleUser.token = accessToken;
                     newGoogleUser.save(function (err, user) {
                         if (err) {
@@ -92,11 +95,12 @@ module.exports = function (passport) {
                                 message: err
                             });
                         }
-                        let googleUserObject = user.toObject();
-                        delete googleUserObject.token;
-                        googleUserObject.type = 'google';
+                        let googleUserObject = {
+                            _id: user._id,
+                            type: 'google'
+                        }
                         return done(null, googleUserObject);
-                    })
+                    });
 
                 }
             });
